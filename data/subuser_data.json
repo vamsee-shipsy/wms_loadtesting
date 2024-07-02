@@ -1,0 +1,82 @@
+[
+    {
+        "warehouse": "TEST_WH1",
+        "username": "subuser1@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH1",
+        "username": "subuser2@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH2",
+        "username": "subuser3@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH2",
+        "username": "subuser4@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH3",
+        "username": "subuser5@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH3",
+        "username": "subuser6@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH4",
+        "username": "subuser7@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH4",
+        "username": "subuser8@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH5",
+        "username": "subuser9@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH5",
+        "username": "subuser10@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH6",
+        "username": "subuser11@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH6",
+        "username": "subuser12@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH7",
+        "username": "subuser13@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH7",
+        "username": "subuser14@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH8",
+        "username": "subuser15@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH8",
+        "username": "subuser16@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH9",
+        "username": "subuser17@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH9",
+        "username": "subuser18@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH10",
+        "username": "subuser19@stockone.com"
+    },
+    {
+        "warehouse": "TEST_WH10",
+        "username": "subuser20@stockone.com"
+    }
+]

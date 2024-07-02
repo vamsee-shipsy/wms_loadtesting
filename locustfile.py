@@ -1,1 +1,4 @@
-from task_behaviour.product_creation import ProductCreationBehaviour
+# from task_behaviour.product_creation import ProductCreationBehaviour
+# from task_behaviour.product_creation import AsyncProductCreationBehaviour
+# from task_behaviour.sale_order_creation import SaleOrderBehaviour
+from task_behaviour.sale_order_creation import AsyncSaleOrderBehaviour

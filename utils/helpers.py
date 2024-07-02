@@ -28,7 +28,6 @@ def user_login(no_of_users=1):
         response = requests.post(login_url, data=payload)
         response_data = response.json()
         client_id, client_secret = '', ''
-        print(response_data.get('status_code'))
         if response_data.get('message') == "Success":
             client_id = response_data.get('client_id')
             client_secret = response_data.get('client_secret')
@@ -38,16 +37,13 @@ def user_login(no_of_users=1):
             "client_secret": client_secret,
             "grant_type": "client_credentials"
         }
-        print(get_token_payload)
         token_response = requests.post(f"{BASE_URL}/o/token/", data=get_token_payload)
         token_response_data = token_response.json()
-        print(token_response_data)
         if token_response_data.get('access_token'):
-            data['token'] = token_response_data.get('access_token')
+            data['access_token'] = token_response_data.get('access_token')
             data['warehouse'] = user.get('warehouse')
             save_json(user, 'data/login_data.json')
             access_token_data.append(data)
-        print(data)
     return access_token_data
 
 if __name__ == '__main__':
