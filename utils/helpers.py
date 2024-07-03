@@ -42,8 +42,8 @@ def user_login(no_of_users=1):
         if token_response_data.get('access_token'):
             data['access_token'] = token_response_data.get('access_token')
             data['warehouse'] = user.get('warehouse')
-            save_json(user, 'data/login_data.json')
             access_token_data.append(data)
+    save_json(access_token_data, 'data/access_token_data.json')
     return access_token_data
 
 if __name__ == '__main__':

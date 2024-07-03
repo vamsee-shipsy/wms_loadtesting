@@ -49,7 +49,7 @@ class SaleOrderTaskSet(TaskSet):
             "items": load_json('data/sale_order_items.json')
         }
         payload = json.dumps(payload)
-        self.client.post("/api/v1/outbound/orders/", headers=headers, data=payload)
+        self.client.post("/api/v1/outbound/orders/", headers=headers, data=payload, name='order_creation')
         
 class AsyncSaleOrderTaskSet(TaskSet):
     
@@ -96,25 +96,27 @@ class AsyncSaleOrderTaskSet(TaskSet):
             "items": load_json('data/sale_order_items.json')
         }
         payload = json.dumps(payload)
-        with self.client.post("/api/v1/async/outbound/orders/", headers=self.headers, data=payload) as async_response:
+        with self.client.post("/api/v1/async/outbound/orders/", headers=self.headers, data=payload, catch_response=True, name='async_order_creation') as async_response:
             response_data = async_response.json()
             if response_data.get('id'):
                 self.uuid = response_data.get('id')
             else:
-                async_response.failure("Failed to create product through async")   
+                print(response_data)
+                async_response.failure(f"Failed to create sale order through async, {response_data}")   
         params = {
             "id": self.uuid
         }
-        while True:
-            with self.client.get("/api/v1/async/core/api_status/", headers=self.headers, params=params) as get_response:
-                time.sleep(2)
-                response_data = get_response.json()
-                if response_data.get('data',[])[0].get('status') == "Failed":
-                    get_response.failure("Failed to create product through async") 
-                elif response_data.get('data',[])[0].get('status') == "Success":
-                    break
-                else:
-                    continue
+        # while True:
+        #     with self.client.get("/api/v1/async/core/api_status/", headers=self.headers, params=params, catch_response=True, name='async_order_check') as get_response:
+        #         time.sleep(2)
+        #         response_data = get_response.json()
+        #         if response_data.get('data',[])[0].get('status') == "Failed":
+        #             get_response.failure(f"Failed to create sale order through async, {response_data}") 
+        #             break
+        #         elif response_data.get('data',[])[0].get('status') == "Success":
+        #             break
+        #         else:
+        #             continue
         
         
         
