@@ -3,7 +3,9 @@ import json
 import time
 from utils.helpers import load_json
 from locust import TaskSet, task
+from utils.logger import setup_logger
 
+sync_product_creation_logger = setup_logger('sync_product_creation', 'logs/sync_product_creation.log')
 
 
 class ProductCreationTaskSet(TaskSet):
@@ -12,7 +14,7 @@ class ProductCreationTaskSet(TaskSet):
         self.access_token_data = self.user.access_token_data
     
     
-    @task
+    @task()
     def create_product(self):
         token_data = random.choice(self.access_token_data)
         headers = {
@@ -24,7 +26,15 @@ class ProductCreationTaskSet(TaskSet):
             "skus": load_json('data/sku_data.json')
         }
         payload = json.dumps(payload)
-        self.client.post("/api/v1/core/products/", headers=headers, data=payload, name='product_creation')
+        with self.client.post("/api/v1/core/products/", headers=headers, data=payload, catch_response=True, name='product_creation') as sync_response:
+            response_data = sync_response.json()
+            if sync_response.status_code != 200:
+                sync_product_creation_logger.error(f"Failed to create product through sync, error response : {response_data} in warehouse: {token_data.get('warehouse')}")
+                sync_response.failure("Failed to create product through sync")
+            else:
+                sync_product_creation_logger.info(f"Product created successfully with warehouse: {token_data.get('warehouse')}")
+        
+        self.user.logger.info(f"Product created successfully with warehouse: {token_data.get('warehouse')}")
 
 class AsyncProductCreationTaskSet(TaskSet):
     
@@ -46,10 +56,11 @@ class AsyncProductCreationTaskSet(TaskSet):
         payload = json.dumps(payload)
         with self.client.post("/api/v1/async/core/products/", headers=self.headers, data=payload, catch_response=True, name='async_product_creatoin') as response:
             response_data = response.json()
-            print(response_data)
             if response_data.get('id'):
                 self.uuid = response_data.get('id')
+                self.user.logger.info(f"Product created successfully with warehouse: {self.token_data.get('warehouse')} with id: {self.uuid}")
             else:
+                self.user.logger.error(f"Failed to create product through async, error response : {response_data}")
                 response.failure("Failed to create product through async")      
         # params = {
         #     "id": self.uuid
