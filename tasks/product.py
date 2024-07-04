@@ -26,7 +26,13 @@ class ProductCreationTaskSet(TaskSet):
             "skus": load_json('data/sku_data.json')
         }
         payload = json.dumps(payload)
-        self.client.post("/api/v1/core/products/", headers=headers, data=payload, name='product_creation')
+        with self.client.post("/api/v1/core/products/", headers=headers, data=payload, catch_response=True, name='product_creation') as sync_response:
+            response_data = sync_response.json()
+            if sync_response.status_code != 200:
+                sync_product_creation_logger.error(f"Failed to create product through sync, error response : {response_data} in warehouse: {token_data.get('warehouse')}")
+                sync_response.failure("Failed to create product through sync")
+            else:
+                sync_product_creation_logger.info(f"Product created successfully with warehouse: {token_data.get('warehouse')}")
         
         self.user.logger.info(f"Product created successfully with warehouse: {token_data.get('warehouse')}")
 

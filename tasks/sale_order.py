@@ -18,9 +18,13 @@ class SaleOrderTaskSet(TaskSet):
             "warehouse": token_data.get('warehouse')
         }
         payload = self.payload
-        self.client.post("/api/v1/outbound/orders/", headers=headers, data=payload, name='order_creation')
-        
-        self.user.logger.info(f"Sale order created successfully with warehouse: {token_data.get('warehouse')}")
+        with self.client.post("/api/v1/outbound/orders/", headers=headers, data=payload, catch_response=True, name='order_creation') as sync_response:
+            response_data = sync_response.json()
+            if sync_response.status_code != 200:
+                self.user.logger.error(f"Failed to create sale order through sync, error response : {response_data} in warehouse: {token_data.get('warehouse')} with access token: {token_data.get('access_token')}")
+                sync_response.failure(f"Failed to create sale order through sync, {response_data}")
+            else:
+                self.user.logger.info(f"Sale order created successfully with warehouse: {token_data.get('warehouse')}")
         
         
 class AsyncSaleOrderTaskSet(TaskSet):

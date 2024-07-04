@@ -35,7 +35,6 @@ def user_login(no_of_users=1):
             "password": LOGIN_CREDENTIALS.get("password")
         }
         response = requests.post(login_url, data=payload)
-        print(response)
         response_data = response.json()
         client_id, client_secret = '', ''
         if response_data.get('message') == "Success":
@@ -100,4 +99,4 @@ def order_payload_creation(no_of_orders=1, no_of_items=1000):
     return final_payload
 
 if __name__ == '__main__':
-    user_login()
+    user_login(20)
