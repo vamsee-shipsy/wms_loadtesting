@@ -20,6 +20,9 @@ class SaleOrderTaskSet(TaskSet):
         payload = self.payload
         self.client.post("/api/v1/outbound/orders/", headers=headers, data=payload, name='order_creation')
         
+        self.user.logger.info(f"Sale order created successfully with warehouse: {token_data.get('warehouse')}")
+        
+        
 class AsyncSaleOrderTaskSet(TaskSet):
     
     def on_start(self):
@@ -38,12 +41,13 @@ class AsyncSaleOrderTaskSet(TaskSet):
             response_data = async_response.json()
             if response_data.get('id'):
                 self.uuid = response_data.get('id')
+                self.user.logger.info(f"Sale order created successfully with warehouse: {token_data.get('warehouse')} with id: {self.uuid}")
             else:
-                print(response_data)
+                self.user.logger.error(f"Failed to create sale order through async, error response : {response_data}")
                 async_response.failure(f"Failed to create sale order through async, {response_data}")   
-        params = {
-            "id": self.uuid
-        }
+        # params = {
+        #     "id": self.uuid
+        # }
         # while True:
         #     with self.client.get("/api/v1/async/core/api_status/", headers=self.headers, params=params, catch_response=True, name='async_order_check') as get_response:
         #         time.sleep(2)
