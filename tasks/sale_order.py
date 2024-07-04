@@ -8,6 +8,7 @@ class SaleOrderTaskSet(TaskSet):
     
     def on_start(self):
         self.access_token_data = self.user.access_token_data
+        self.payload = json.dumps(self.user.order_payload)
     
     @task
     def create_sale_order(self):
@@ -16,45 +17,14 @@ class SaleOrderTaskSet(TaskSet):
             "Authorization": token_data.get('access_token'),
             "warehouse": token_data.get('warehouse')
         }
-        payload = {
-            "warehouse": f"{token_data.get('warehouse')}",
-            "order_type":"slot",
-            "promised_time": "2022-01-23 16:30:00",
-            "slot_from": "2022-01-23 15:30:00",
-            "slot_to": "2022-01-23 16:30:00",
-            "order_reference": "",
-            "customer": {
-                "customer_reference": "TEST",
-                "customer_name": "TEST"
-            },
-            "payment_info": {
-                "payment_mode": "prepaid",
-                "method_of_payment": "",
-                "transaction_id": "",
-                "paid_amount": 250.0,
-                "payment_date": "2021-07-17"
-            },
-            "charges": [
-                {
-                    "name": "shipping charges",
-                    "amount": 25,
-                    "tax_amount": 0
-                },
-                {
-                    "name": "packing charges",
-                    "amount": 10,
-                    "tax_amount": 0
-                }
-            ],
-            "items": load_json('data/sale_order_items.json')
-        }
-        payload = json.dumps(payload)
+        payload = self.payload
         self.client.post("/api/v1/outbound/orders/", headers=headers, data=payload, name='order_creation')
         
 class AsyncSaleOrderTaskSet(TaskSet):
     
     def on_start(self):
         self.access_token_data = self.user.access_token_data
+        self.payload = json.dumps(self.user.order_payload)
     
     @task
     def create_async_sale_order(self):
@@ -63,39 +33,7 @@ class AsyncSaleOrderTaskSet(TaskSet):
             "Authorization": token_data.get('access_token'),
             "warehouse": token_data.get('warehouse')
         }
-        payload = {
-            "warehouse": f"{token_data.get('warehouse')}",
-            "order_type":"slot",
-            "promised_time": "2022-01-23 16:30:00",
-            "slot_from": "2022-01-23 15:30:00",
-            "slot_to": "2022-01-23 16:30:00",
-            "order_reference": "",
-            "customer": {
-                "customer_reference": "TEST",
-                "customer_name": "TEST"
-            },
-            "payment_info": {
-                "payment_mode": "prepaid",
-                "method_of_payment": "",
-                "transaction_id": "",
-                "paid_amount": 250.0,
-                "payment_date": "2021-07-17"
-            },
-            "charges": [
-                {
-                    "name": "shipping charges",
-                    "amount": 25,
-                    "tax_amount": 0
-                },
-                {
-                    "name": "packing charges",
-                    "amount": 10,
-                    "tax_amount": 0
-                }
-            ],
-            "items": load_json('data/sale_order_items.json')
-        }
-        payload = json.dumps(payload)
+        payload = self.payload
         with self.client.post("/api/v1/async/outbound/orders/", headers=self.headers, data=payload, catch_response=True, name='async_order_creation') as async_response:
             response_data = async_response.json()
             if response_data.get('id'):

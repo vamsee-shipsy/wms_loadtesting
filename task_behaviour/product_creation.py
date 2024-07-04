@@ -13,7 +13,7 @@ class ProductCreationBehaviour(HttpUser):
     wait_time = between(1, 5)
     
     def on_start(self):
-        self.access_token_data = user_login(10)
+        self.access_token_data = user_login(5)
 class AsyncProductCreationBehaviour(HttpUser):
     tasks = [
         AsyncProductCreationTaskSet
@@ -21,7 +21,7 @@ class AsyncProductCreationBehaviour(HttpUser):
     wait_time = between(1, 5)
     
     def on_start(self):
-        self.access_token_data = user_login(1)
+        self.access_token_data = user_login(5)
         
         
         
