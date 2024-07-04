@@ -26,6 +26,7 @@ def user_login(no_of_users=1):
             "password": LOGIN_CREDENTIALS.get("password")
         }
         response = requests.post(login_url, data=payload)
+        print(response)
         response_data = response.json()
         client_id, client_secret = '', ''
         if response_data.get('message') == "Success":

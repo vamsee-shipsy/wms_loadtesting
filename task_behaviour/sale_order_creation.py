@@ -11,7 +11,7 @@ class SaleOrderBehaviour(HttpUser):
     wait_time = between(1, 5)
     
     def on_start(self):
-        self.access_token_data = user_login(10)
+        self.access_token_data = user_login(5)
         
 class AsyncSaleOrderBehaviour(HttpUser):
     tasks = [
@@ -20,5 +20,5 @@ class AsyncSaleOrderBehaviour(HttpUser):
     wait_time = between(1, 5)
     
     def on_start(self):
-        self.access_token_data = user_login(10)
+        self.access_token_data = user_login(5)
     
