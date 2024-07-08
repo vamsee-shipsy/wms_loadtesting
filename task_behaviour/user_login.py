@@ -5,11 +5,9 @@ from utils.logger import setup_logger
 
 
 class UserBehaviour(HttpUser):
-    
+
     wait_time = between(1, 5)
-    
+
     @task()
     def user_authentication(self):
-        user_login(20)
-        
-        
+        user_login(1)

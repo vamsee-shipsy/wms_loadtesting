@@ -4,6 +4,7 @@ import time
 from utils.helpers import load_json
 from locust import TaskSet, task
 from utils.logger import setup_logger
+from config.settings import WAREHOUSES
 
 sync_product_creation_logger = setup_logger('sync_product_creation', 'logs/sync_product_creation.log')
 
@@ -16,13 +17,14 @@ class ProductCreationTaskSet(TaskSet):
 
     @task()
     def create_product(self):
-        token_data = random.choice(self.access_token_data)
+        token_data = self.access_token_data[0]
+        warehouse = random.choice(WAREHOUSES)
         headers = {
             "Authorization": token_data.get('access_token'),
-            "warehouse": token_data.get('warehouse')
+            "warehouse": warehouse
         }
         payload = {
-            "warehouse": f"{token_data.get('warehouse')}",
+            "warehouse": warehouse,
             "skus": load_json('data/sku_data.json')
         }
         payload = json.dumps(payload)
@@ -30,12 +32,12 @@ class ProductCreationTaskSet(TaskSet):
             try:
                 response_data = sync_response.json()
                 if sync_response.status_code != 200:
-                    sync_product_creation_logger.error(f"Failed to create product through sync, error response : {response_data} in warehouse: {token_data.get('warehouse')}")
+                    sync_product_creation_logger.error(f"Failed to create product through sync, error response : {response_data} in warehouse: {warehouse}")
                     sync_response.failure("Failed to create product through sync")
                 else:
                     sync_product_creation_logger.info(f"Product created successfully with warehouse: {token_data.get('warehouse')}")
             except Exception as e:
-                sync_product_creation_logger.error(f"Failed to create product through sync, error response : {sync_response.text} in warehouse: {token_data.get('warehouse')}")
+                sync_product_creation_logger.error(f"Failed to create product through sync, error response : {sync_response.text} in warehouse: {warehouse}")
                 sync_response.failure(f"Failed to create product through sync, error response : {sync_response.status_code}")
 
 class AsyncProductCreationTaskSet(TaskSet):
@@ -45,14 +47,15 @@ class AsyncProductCreationTaskSet(TaskSet):
 
     @task()
     def create_async_product(self):
-        self.token_data = random.choice(self.access_token_data)
+        self.token_data =  self.access_token_data[0]
+        warehouse = random.choice(WAREHOUSES)
         self.headers = {
             "Authorization": self.token_data.get('access_token'),
-            "warehouse": self.token_data.get('warehouse')
+            "warehouse": warehouse
         }
 
         payload = {
-            "warehouse": f"{self.token_data.get('warehouse')}",
+            "warehouse": warehouse,
             "skus": load_json('data/sku_data.json')
         }
         payload = json.dumps(payload)
@@ -61,7 +64,7 @@ class AsyncProductCreationTaskSet(TaskSet):
                 response_data = response.json()
                 if response_data.get('id'):
                     self.uuid = response_data.get('id')
-                    self.user.logger.info(f"Product created successfully with warehouse: {self.token_data.get('warehouse')} with id: {self.uuid}")
+                    self.user.logger.info(f"Product created successfully with warehouse: {warehouse} with id: {self.uuid}")
                 else:
                     self.user.logger.error(f"Failed to create product through async, error response : {response_data}")
                     response.failure("Failed to create product through async")

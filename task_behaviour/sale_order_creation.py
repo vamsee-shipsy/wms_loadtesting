@@ -13,16 +13,16 @@ class SaleOrderBehaviour(HttpUser):
     
     def on_start(self):
         if not os.path.exists('data/access_token_data.json'):
-            self.access_token_data = user_login(5)
+            self.access_token_data = user_login()
         else:
             self.access_token_data = load_json('data/access_token_data.json')
             for token_data in self.access_token_data:
                 if is_token_expired(token_data['expires_at']):
-                    self.access_token_data = user_login(5)
+                    self.access_token_data = user_login()
                     break
                 
         self.logger = setup_logger('sync_sale_order_creation', 'logs/sync_sale_order_creation.log')
-        self.order_payload = order_payload_creation(no_of_items=1000)
+        self.order_payload = order_payload_creation(no_of_items=2)
         
 class AsyncSaleOrderBehaviour(HttpUser):
     tasks = [
@@ -32,12 +32,12 @@ class AsyncSaleOrderBehaviour(HttpUser):
     
     def on_start(self):
         if not os.path.exists('data/access_token_data.json'):
-            self.access_token_data = user_login(5)
+            self.access_token_data = user_login()
         else:
             self.access_token_data = load_json('data/access_token_data.json')
             for token_data in self.access_token_data:
                 if is_token_expired(token_data['expires_at']):
-                    self.access_token_data = user_login(5)
+                    self.access_token_data = user_login()
                     break
                 
         self.logger = setup_logger('async_sale_order_creation', 'logs/async_sale_order_creation.log')

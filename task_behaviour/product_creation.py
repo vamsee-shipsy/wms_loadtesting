@@ -14,12 +14,12 @@ class ProductCreationBehaviour(HttpUser):
     
     def on_start(self):
         if not os.path.exists('data/access_token_data.json'):
-            self.access_token_data = user_login(10)
+            self.access_token_data = user_login()
         else:
             self.access_token_data = load_json('data/access_token_data.json')
             for token_data in self.access_token_data:
                 if is_token_expired(token_data['expires_at']):
-                    self.access_token_data = user_login(10)
+                    self.access_token_data = user_login()
                     break
                 
         self.logger = setup_logger('sync_product_creation', 'logs/sync_product_creation.log')
@@ -33,12 +33,12 @@ class AsyncProductCreationBehaviour(HttpUser):
 
     def on_start(self):
         if not os.path.exists('data/access_token_data.json'):
-            self.access_token_data = user_login(10)
+            self.access_token_data = user_login()
         else:
             self.access_token_data = load_json('data/access_token_data.json')
             for token_data in self.access_token_data:
                 if is_token_expired(token_data['expires_at']):
-                    self.access_token_data = user_login(10)
+                    self.access_token_data = user_login()
                     break
                 
         self.logger = setup_logger('async_product_creation', 'logs/async_product_creation.log')
