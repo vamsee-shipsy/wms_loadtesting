@@ -1,5 +1,5 @@
 Jinja2==3.1.2
-locust==2.14.2
+locust==2.29.1
 python-engineio==4.8.0
 python-socketio==5.10.0
 requests==2.31
