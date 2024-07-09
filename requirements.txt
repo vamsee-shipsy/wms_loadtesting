@@ -8,7 +8,7 @@ urllib3==1.26.13
 uvicorn==0.24.0.post1
 ws4py==0.5.1
 wsproto==1.2.0
-zipp==3.11.0
+zipp==3.19.1
 zope.event==4.6
 zope.interface==5.5.2
 
